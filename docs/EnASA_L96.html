@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Ensemble sensitivity analysis with Python - Comparison of adjoint sensitivity analysis and ensemble adjoint sensitivity analysis using Lorenz-96 model</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Ensemble sensitivity analysis with Python</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./EnASA_L96.html" aria-current="page"> 
+<span class="menu-text">L96</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./L63_PLS.html"> 
+<span class="menu-text">L63</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#model-lorenz-96" id="toc-model-lorenz-96" class="nav-link active" data-scroll-target="#model-lorenz-96">Model: Lorenz 96</a>
+  <ul class="collapse">
+  <li><a href="#basic-state" id="toc-basic-state" class="nav-link" data-scroll-target="#basic-state">basic state</a></li>
+  </ul></li>
+  <li><a href="#adjoint-sensitivity-analysis" id="toc-adjoint-sensitivity-analysis" class="nav-link" data-scroll-target="#adjoint-sensitivity-analysis">Adjoint sensitivity analysis</a></li>
+  <li><a href="#ensemble-adjoint-sensitivity-analysis" id="toc-ensemble-adjoint-sensitivity-analysis" class="nav-link" data-scroll-target="#ensemble-adjoint-sensitivity-analysis">Ensemble adjoint sensitivity analysis</a>
+  <ul class="collapse">
+  <li><a href="#minimum-norm-solution" id="toc-minimum-norm-solution" class="nav-link" data-scroll-target="#minimum-norm-solution">minimum norm solution</a></li>
+  <li><a href="#minimum-variance-solution" id="toc-minimum-variance-solution" class="nav-link" data-scroll-target="#minimum-variance-solution">minimum variance solution</a></li>
+  <li><a href="#comparison-of-enasa-methods" id="toc-comparison-of-enasa-methods" class="nav-link" data-scroll-target="#comparison-of-enasa-methods">Comparison of EnASA methods</a></li>
+  </ul></li>
+  <li><a href="#sensitivity-to-lead-time" id="toc-sensitivity-to-lead-time" class="nav-link" data-scroll-target="#sensitivity-to-lead-time">Sensitivity to lead time</a></li>
+  <li><a href="#sensitivity-to-ensemble-size" id="toc-sensitivity-to-ensemble-size" class="nav-link" data-scroll-target="#sensitivity-to-ensemble-size">Sensitivity to ensemble size</a></li>
+  <li><a href="#sensitivity-to-hyper-parameters" id="toc-sensitivity-to-hyper-parameters" class="nav-link" data-scroll-target="#sensitivity-to-hyper-parameters">Sensitivity to hyper parameters</a>
+  <ul class="collapse">
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression">ridge regression</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Comparison of adjoint sensitivity analysis and ensemble adjoint sensitivity analysis using Lorenz-96 model</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="7eb39c31" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> Normalize</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy.random <span class="im">import</span> default_rng</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="model-lorenz-96" class="level2">
+<h2 class="anchored" data-anchor-id="model-lorenz-96">Model: Lorenz 96</h2>
+<p><span id="eq-l96"><span class="math display">\[
+\frac{\mathrm{d}X_n}{\mathrm{d}t} = -X_{n-2}X_{n-1}+X_{n-1}X_{n+1}-X_n+F
+\tag{1}\]</span></span></p>
+<div id="004dcc78" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.environ[<span class="st">'HOME'</span>]<span class="op">+</span><span class="st">'/Development/pydpac/model'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lorenz <span class="im">import</span> L96</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>nx<span class="op">=</span><span class="dv">40</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dt<span class="op">=</span><span class="fl">0.05</span><span class="op">/</span><span class="fl">6.0</span> <span class="co"># = 1 hour</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>F<span class="op">=</span><span class="fl">8.0</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> L96(nx,dt,F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>nx=40 F=8.0 dt=0.008333333333333333</code></pre>
+</div>
+</div>
+<section id="basic-state" class="level3">
+<h3 class="anchored" data-anchor-id="basic-state">basic state</h3>
+<div id="a4ab6303" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize random seed</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> default_rng(<span class="dv">509</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># spinup</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> rng.normal(<span class="fl">0.0</span>,size<span class="op">=</span>nx,scale<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>nstep <span class="op">=</span> <span class="dv">500</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(nstep):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> model(x)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>vtmax <span class="op">=</span> <span class="dv">72</span> <span class="co"># hours</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">24</span> <span class="co"># hours</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>it <span class="op">=</span> <span class="dv">21</span> <span class="co"># target point</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> [<span class="dv">0</span>]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>xb <span class="op">=</span> [x]</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(vtmax):</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> model(x)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    t.append(i)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    xb.append(x)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>plt.plot(xb[<span class="dv">0</span>],label<span class="op">=</span><span class="st">'initial'</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>plt.plot(xb[vt],label<span class="op">=</span><span class="st">'valid'</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>plt.plot([it],xb[vt][it],marker<span class="op">=</span><span class="st">'o'</span>,c<span class="op">=</span><span class="st">'r'</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>mp <span class="op">=</span> plt.pcolormesh(np.arange(nx),t,np.array(xb),<span class="op">\</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    shading<span class="op">=</span><span class="st">'auto'</span>,norm<span class="op">=</span>Normalize(<span class="op">-</span><span class="dv">10</span>,<span class="dv">10</span>),cmap<span class="op">=</span><span class="st">'coolwarm'</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> vt <span class="op">&lt;</span> vtmax:</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    plt.hlines([vt],<span class="dv">0</span>,nx<span class="op">-</span><span class="dv">1</span>,colors<span class="op">=</span><span class="st">'k'</span>,ls<span class="op">=</span><span class="st">'dashed'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.colorbar(mp)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-4-output-1.png" width="582" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-4-output-2.png" width="557" height="416" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="adjoint-sensitivity-analysis" class="level1">
+<h1>Adjoint sensitivity analysis</h1>
+<p><span id="eq-asa"><span class="math display">\[
+\frac{\partial J}{\partial \mathbf{x}_0}=\mathbf{M}^\mathrm{T}\frac{\partial J}{\partial \mathbf{x}_T}
+\tag{2}\]</span></span> <span class="math display">\[
+J=\frac{1}{2}x_T(i_t)^2
+\]</span> <span class="math display">\[
+\frac{\partial J}{\partial \mathbf{x}_T}=\left\{
+\begin{matrix}
+x_T(i_t) &amp; i=i_t\\
+0 &amp; i\ne i_t
+\end{matrix}\right.
+\]</span></p>
+<p><span class="citation" data-cites="langland_initial_2002">Langland et al. (<a href="#ref-langland_initial_2002" role="doc-biblioref">2002</a>)</span> <span id="eq-dxopt"><span class="math display">\[
+\delta \mathbf{x}_0^\mathrm{opt}=-\lambda\frac{\partial J}{\partial \mathbf{x}_0}
+\tag{3}\]</span></span> <span id="eq-optscale"><span class="math display">\[
+\lambda = \frac{J}{(\partial J/\partial \mathbf{x}_0)^\mathrm{T}\partial J/\partial \mathbf{x}_0}
+\tag{4}\]</span></span></p>
+<div id="3474356b" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_dxopt(dJdx0,vt):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> xb[vt][it]<span class="op">*</span>xb[vt][it]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    optscale <span class="op">=</span> J <span class="op">/</span> np.dot(dJdx0,dJdx0)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    dxopt <span class="op">=</span> <span class="op">-</span> optscale<span class="op">*</span>dJdx0</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dxopt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="dc41ab73" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_djdx(dJdx0,vt,label<span class="op">=</span><span class="st">'dJdx0'</span>):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    plt.plot(xb[<span class="dv">0</span>],ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'x0'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(dJdx0,label<span class="op">=</span>label)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    plt.plot(dxopt,label<span class="op">=</span><span class="st">'dxopt'</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    plt.grid()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    plt.legend()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f'vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> xb[<span class="dv">0</span>] <span class="op">+</span> dxopt</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    dxp <span class="op">=</span> dxopt.copy()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(vt):</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># nonlinear evolution</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        xp <span class="op">=</span> model(xp)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># TLM evolution</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        dxp <span class="op">=</span> model.step_t(xb[i],dxp)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(xb[vt],ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'base'</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(xp,ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'full model'</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].plot(xp<span class="op">-</span>xb[vt],label<span class="op">=</span><span class="st">'full - base'</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].plot(dxp,label<span class="op">=</span><span class="st">'TLM'</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> axs[<span class="dv">1</span>].get_ylim()</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    ylim <span class="op">=</span> <span class="bu">max</span>(<span class="op">-</span>ymin,ymax)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].set_ylim(<span class="op">-</span>ylim,ylim)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        ax.vlines([it],<span class="dv">0</span>,<span class="dv">1</span>,colors<span class="op">=</span><span class="st">'gray'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>,transform<span class="op">=</span>ax.get_xaxis_transform(),zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        ax.grid()</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        ax.legend()</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="d125ad3c" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> asa(vt,plot_hov<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    xT <span class="op">=</span> xb[vt].copy()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    x0 <span class="op">=</span> xb[<span class="dv">0</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    dJdxT <span class="op">=</span> np.zeros_like(x0)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    dJdxT[it] <span class="op">=</span> xT[it]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    dJdx0 <span class="op">=</span> dJdxT.copy()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    dJdx <span class="op">=</span> [dJdxT]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(vt):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        dJdx0 <span class="op">=</span> model.step_adj(xb[vt<span class="op">-</span>i<span class="op">-</span><span class="dv">2</span>],dJdx0)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        dJdx.append(dJdx0)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> plot_hov:</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        mp <span class="op">=</span> plt.pcolormesh(np.arange(nx),t[<span class="dv">0</span>:vt<span class="op">+</span><span class="dv">1</span>][::<span class="op">-</span><span class="dv">1</span>],np.array(dJdx),<span class="op">\</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            shading<span class="op">=</span><span class="st">'auto'</span>,norm<span class="op">=</span>Normalize(<span class="op">-</span><span class="dv">5</span>,<span class="dv">5</span>),cmap<span class="op">=</span><span class="st">'coolwarm'</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        plt.colorbar(mp)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJdx0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="fb9b5d64" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dJdx0 <span class="op">=</span> asa(vt, plot_hov<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dxopt <span class="op">=</span> calc_dxopt(dJdx0,vt)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>check_djdx(dJdx0,vt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-8-output-1.png" width="536" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-8-output-2.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-8-output-3.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ensemble-adjoint-sensitivity-analysis" class="level1">
+<h1>Ensemble adjoint sensitivity analysis</h1>
+<div id="0855ec5b" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Ensemble trajectories</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_ens(nens,plot<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    xe0 <span class="op">=</span> rng.normal(<span class="fl">0.0</span>,size<span class="op">=</span>(nx,nens),scale<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    nstep <span class="op">=</span> <span class="dv">500</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(nstep):</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        xe0 <span class="op">=</span> model(xe0)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> xe0 <span class="op">-</span> xe0.mean(axis<span class="op">=</span><span class="dv">1</span>)[:,<span class="va">None</span>]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    diagpf <span class="op">=</span> np.diag(np.dot(xp,xp.T))<span class="op">/</span>(nens<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    xstd <span class="op">=</span> np.sqrt(diagpf.mean())</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> xp <span class="op">*</span> <span class="fl">0.5</span> <span class="op">/</span> xstd <span class="co"># rescaling</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    xe0 <span class="op">=</span> xp <span class="op">+</span> xb[<span class="dv">0</span>][:,<span class="va">None</span>]</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> plot:</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        plt.plot(xe0,ls<span class="op">=</span><span class="st">'dotted'</span>,c<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        plt.plot(xb[<span class="dv">0</span>])</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">'initial'</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    xe <span class="op">=</span> [xe0]</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(vtmax):</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        xe0 <span class="op">=</span> model(xe0)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        xe.append(xe0)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> plot:</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        plt.plot(xe[vt],ls<span class="op">=</span><span class="st">'dotted'</span>,c<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        plt.plot(xb[vt])</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">'final'</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xe</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_prtb(vt,xb,xe):</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    nens <span class="op">=</span> xe[<span class="dv">0</span>].shape[<span class="dv">1</span>]</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    Je <span class="op">=</span> np.zeros(nens)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(nens):</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        Je[k] <span class="op">=</span> xe[vt][it,k]<span class="op">**</span><span class="dv">2</span><span class="op">/</span><span class="fl">2.0</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(Je)</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    X0 <span class="op">=</span> xe[<span class="dv">0</span>] <span class="op">-</span> xb[<span class="dv">0</span>][:,<span class="va">None</span>]</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">## standardization</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    Jem <span class="op">=</span> np.mean(Je)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    sJe <span class="op">=</span> np.std(Je)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    Jes <span class="op">=</span> (Je <span class="op">-</span> Jem) <span class="op">/</span> sJe</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    X0m <span class="op">=</span> np.mean(X0,axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    sX0 <span class="op">=</span> np.std(X0,axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    X0s <span class="op">=</span> (X0 <span class="op">-</span> X0m[:,<span class="va">None</span>]) <span class="op">/</span> sX0[:,<span class="va">None</span>]</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Je, Jes, Jem, sJe, X0, X0s, X0m, sX0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="df9b11cc" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nens <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>xe <span class="op">=</span> create_ens(nens, plot<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nens=40</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-10-output-2.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-10-output-3.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[
+\mathbf{J}_\mathrm{e}=[J_{\mathrm{e},1},\cdots,J_{\mathrm{e},K}]^\mathrm{T}
+\]</span> <span class="math display">\[
+\mathbf{X}_0 = [\mathbf{x}_0^1 - \mathbf{x}_0,\cdots,\mathbf{x}_0^K - \mathbf{x}_0]
+\]</span></p>
+<p>Statistical linearization of <span class="math inline">\(\partial J/\partial \mathbf{x}_0\)</span> becomes <span id="eq-esa"><span class="math display">\[
+\mathbf{J}^*_\mathrm{e}=\mathbf{X}_0^{*\mathrm{T}}\boldsymbol{\beta}+\boldsymbol{\varepsilon}, \quad \hat{\boldsymbol{\beta}}=\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)^*
+\tag{5}\]</span></span> where <span class="math inline">\(\mathbf{J}^*_\mathrm{e}\)</span> and <span class="math inline">\(\mathbf{X}_0^*\)</span> are the standardized ensemble metric vector and perturbation matrix. The ensemble adjoint sensitivity <span class="math inline">\(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\)</span> and the residual error <span class="math inline">\(\boldsymbol{\varepsilon}\)</span> are evaluated as <span class="math display">\[
+\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}=\frac{\sigma(\mathbf{J}_\mathrm{e})}{\sigma(\mathbf{X}_0)}\hat{\boldsymbol{\beta}}
+\]</span> <span class="math display">\[
+\boldsymbol{\varepsilon}=-\overline{\mathbf{X}_0}^\mathrm{T}\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}+\overline{\mathbf{J_e}}
+\]</span></p>
+<div id="f4643a73" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dJedx0_dict <span class="op">=</span> {}</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>err_dict <span class="op">=</span> {}</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dxopt_dict <span class="op">=</span> {}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="minimum-norm-solution" class="level2">
+<h2 class="anchored" data-anchor-id="minimum-norm-solution">minimum norm solution</h2>
+<p><span class="citation" data-cites="enomoto_simple_2015">Enomoto et al. (<a href="#ref-enomoto_simple_2015" role="doc-biblioref">2015</a>)</span>; <span class="citation" data-cites="hacker_multivariate_2015">Hacker and Lei (<a href="#ref-hacker_multivariate_2015" role="doc-biblioref">2015</a>)</span></p>
+<p><span id="eq-enasa-minnorm"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{minnorm}=\mathbf{X}_0(\mathbf{X}_0^\mathrm{T}\mathbf{X}_0)^\dagger\mathbf{J}_\mathrm{e}
+\tag{6}\]</span></span></p>
+<div id="4b9533e3" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_minnorm(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(X0s,np.linalg.pinv(np.dot(X0s.T,X0s))),Jes)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_minnorm(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'minnorm'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'minnorm'</span>] <span class="op">=</span> err</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'minnorm'</span>],vt)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'minnorm'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'minnorm'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-12-output-1.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-12-output-2.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="minimum-variance-solution" class="level2">
+<h2 class="anchored" data-anchor-id="minimum-variance-solution">minimum variance solution</h2>
+<p><span id="eq-enasa-minvar"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{minvar}=(\mathbf{X}_0\mathbf{X}_0^\mathrm{T})^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e},
+\tag{7}\]</span></span> which cannot be determined if <span class="math inline">\(\mathbf{X}_0\mathbf{X}_0^\mathrm{T}\)</span> is singular (which is true for most cases).</p>
+<ul>
+<li>diagonal approximation <span class="citation" data-cites="ancell_comparing_2007">(<a href="#ref-ancell_comparing_2007" role="doc-biblioref">Ancell and Hakim 2007</a>)</span> <span id="eq-enasa-diag"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{diag}=(\mathrm{diag}[\mathbf{X}_0\mathbf{X}_0^\mathrm{T}])^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e}
+\tag{8}\]</span></span></li>
+</ul>
+<div id="98c6f666" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_diag(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.eye(X0s.shape[<span class="dv">0</span>])<span class="op">/</span>np.diag(np.dot(X0s,X0s.T)),X0s),Jes)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_diag(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'diag'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'diag'</span>] <span class="op">=</span> err</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'diag'</span>],vt)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'diag'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'diag'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-13-output-1.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-13-output-2.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>pseudoinverse <span id="eq-enasa-psd"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{psd}=(\mathbf{X}_0\mathbf{X}_0^\mathrm{T})^\dagger\mathbf{X}_0\mathbf{J}_\mathrm{e}
+\tag{9}\]</span></span> This is equivalent to the minimum norm solution (Eq. <a href="#eq-enasa-minnorm" class="quarto-xref">6</a>).</li>
+</ul>
+<!---
+
+::: {#eff642cf .cell execution_count=13}
+``` {.python .cell-code}
+dJedx0_s = np.dot(np.dot(np.linalg.pinv(np.dot(X0s,X0s.T)),X0s),Jes)
+dJedx0 = dJedx0_s * sJe / sX0
+err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
+#dJedx0_dict['psd'] = dJedx0
+#err_dict['psd'] = err
+#check_djdx(dJedx0,label='dJedx0')
+```
+:::
+
+
+--->
+<ul>
+<li>principal component regression (PCR) <span class="math display">\[
+\frac{1}{K-1}\mathbf{X}_0\mathbf{X}_0^\mathrm{T}=\mathbf{P}_R\boldsymbol{\Lambda}\mathbf{P}_R^\mathrm{T}
+\]</span> <span class="math display">\[
+\mathbf{T}_R = \mathbf{P}_R^\mathrm{T}\mathbf{X}_0
+\]</span> <span id="eq-enasa-pcr"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{pcr}=\mathbf{P}_R(\mathbf{T}_R\mathbf{T}_R^\mathrm{T})^{-1}\mathbf{T}_R\mathbf{J}_e
+\tag{10}\]</span></span></li>
+</ul>
+<div id="36ba1dea" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_pcr(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    pcr <span class="op">=</span> make_pipeline(PCA(n_components<span class="op">=</span><span class="va">None</span>), LinearRegression())</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    pcr.fit(X0s.transpose(),Jes)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> pcr.named_steps[<span class="st">"linearregression"</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    pca <span class="op">=</span> pcr.named_steps[<span class="st">"pca"</span>]</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> pca.inverse_transform(reg.coef_[<span class="va">None</span>,:])[<span class="dv">0</span>,]</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(dJedx0_s.shape)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#err_s = pca.inverse_transform(reg.intercept_[None,:])[0,]</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0) <span class="co">#+ err_s</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_pcr(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'pcr'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'pcr'</span>] <span class="op">=</span> err</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'pcr'</span>],vt)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'pcr'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'pcr'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(40,)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-15-output-2.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-15-output-3.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>ridge regression <span id="eq-enasa-ridge"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{ridge}=(\mathbf{X}_0\mathbf{X}_0^\mathrm{T}+\mu\mathbf{I})^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e},
+\tag{11}\]</span></span> where <span class="math inline">\(\mu\)</span> is a hyper parameter.</li>
+</ul>
+<div id="892f5247" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_ridge(Jes,Jem,sJe,X0s,X0m,sX0,mu<span class="op">=</span><span class="fl">0.01</span>):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.linalg.inv(np.dot(X0s,X0s.T)<span class="op">+</span>mu<span class="op">*</span>np.eye(X0s.shape[<span class="dv">0</span>])),X0s),Jes)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err <span class="op">=</span> enasa_ridge(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'ridge'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'ridge'</span>] <span class="op">=</span> err</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'ridge'</span>],vt)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'ridge'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'ridge'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-16-output-1.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-16-output-2.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>partial least square (PLS) regression</p>
+<p>The target vector is also projected onto a latent space spanned by the principal components. <span id="eq-enasa-pls"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{pls}=\mathbf{W}(\mathbf{P}^\mathrm{T}\mathbf{W})^{-1}\mathbf{d}
+\tag{12}\]</span></span> where <span class="math inline">\(\mathbf{W}=[\mathbf{w}_1,\cdots,\mathbf{w}_R]\)</span>, <span class="math inline">\(\mathbf{P}=[\mathbf{p}_1,\cdots,\mathbf{p}_R]\)</span>, and <span class="math inline">\(\mathbf{d}=[d_1,\cdots,d_R]^\mathrm{T}\)</span> are determined iteratively, <span class="math display">\[
+\mathbf{w}_r=\frac{\mathbf{X}_0^{(r)}\mathbf{J}^{(r)}_\mathrm{e}}{\|\mathbf{X}_0^{(r)}\mathbf{J}^{(r)}_\mathrm{e}\|}
+, \quad \mathbf{t}_r=(\mathbf{X}_0^{(r)})^\mathrm{T}\mathbf{w}_r
+, \quad \mathbf{p}_r=\frac{\mathbf{X}_0^{(r)}\mathbf{t}_r}{\|\mathbf{t}_r\|}
+, \quad d_r=\frac{\mathbf{t}_r^\mathrm{T}\mathbf{J}^\mathrm{(r)}_\mathrm{e}}{\|\mathbf{t}_r\|}
+\]</span></p>
+<p><span class="math inline">\(\mathbf{X}_0^{(r)}, \mathbf{J}_\mathrm{e}^{(r)}\)</span> are obtained from deflation.</p></li>
+</ul>
+<div id="bcdd3870" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_pls(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.cross_decomposition <span class="im">import</span> PLSRegression</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    pls <span class="op">=</span> PLSRegression(n_components<span class="op">=</span>nx)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    pls.fit(X0s.transpose(),Jes)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> pls.coef_[<span class="dv">0</span>,:]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">#err_s = pls.intercept_[0]</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0) <span class="co">#+ err_s</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>dJedx0, err <span class="op">=</span> enasa_pls(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'pls'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'pls'</span>] <span class="op">=</span> err</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'pls'</span>],vt)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'pls'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'pls'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
+  warnings.warn(f"Y residual is constant at iteration {k}")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-17-output-2.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-17-output-3.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="comparison-of-enasa-methods" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-of-enasa-methods">Comparison of EnASA methods</h2>
+<div id="16e16089" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>markers<span class="op">=</span>[<span class="st">'o'</span>,<span class="st">'v'</span>,<span class="st">'s'</span>,<span class="st">'P'</span>,<span class="st">'X'</span>]</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>marker_style<span class="op">=</span><span class="bu">dict</span>(markerfacecolor<span class="op">=</span><span class="st">'none'</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>ax.plot(dJdx0,label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'dJ/dx0'</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-18-output-1.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="ee5dbaa0" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>ax.plot(dxopt,label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxopt_dict.keys()):</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'dxopt'</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-19-output-1.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[
+\hat{\mathbf{J}_\mathrm{e}}=\mathbf{X}_0^\mathrm{T}\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0} + \boldsymbol{\varepsilon}
+\]</span></p>
+<div id="85ca4636" class="cell" data-execution_count="19">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>cmap<span class="op">=</span>plt.get_cmap(<span class="st">'tab10'</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Je'</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_title(key)</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-20-output-1.png" width="444" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sensitivity-to-lead-time" class="level1">
+<h1>Sensitivity to lead time</h1>
+<div id="8efddcaa" class="cell" data-execution_count="20">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>enasa_dict <span class="op">=</span> {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'minnorm'</span>:enasa_minnorm,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'diag'</span>:enasa_diag,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pcr'</span>:enasa_pcr,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ridge'</span>:enasa_ridge,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pls'</span>:enasa_pls,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>vtlist <span class="op">=</span> [<span class="dv">24</span>,<span class="dv">48</span>,<span class="dv">72</span>]</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>dJdx0_dict <span class="op">=</span> <span class="bu">dict</span>()</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict <span class="op">=</span> <span class="bu">dict</span>()</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> vt <span class="kw">in</span> vtlist:</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    dJdx0 <span class="op">=</span> asa(vt)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    dxopt <span class="op">=</span> calc_dxopt(dJdx0,vt)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    check_djdx(dJdx0,vt)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    dJdx0_dict[vt] <span class="op">=</span> dJdx0</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    dxopt_dict[vt] <span class="op">=</span> dxopt</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> etype <span class="kw">in</span> enasa_dict.keys():</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>        dJedx0, err <span class="op">=</span> enasa_dict[etype](Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        dJedx0_dict[etype] <span class="op">=</span> dJedx0</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>        err_dict[etype] <span class="op">=</span> err</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>        dxeopt <span class="op">=</span> calc_dxopt(dJedx0_dict[etype], vt)</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>        dxeopt_dict[etype]<span class="op">=</span>dxeopt</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJdx0,label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>        ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxopt,label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>        ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>        Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>        ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>    ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ax.set_title(key)</span></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-1.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-2.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(40,)
+(40,)
+(40,)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
+  warnings.warn(f"Y residual is constant at iteration {k}")
+/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
+  warnings.warn(f"Y residual is constant at iteration {k}")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-5.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-6.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-7.png" width="444" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-8.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-9.png" width="585" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-10.png" width="586" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-11.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-12.png" width="450" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-13.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-14.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-15.png" width="586" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-16.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-17.png" width="453" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sensitivity-to-ensemble-size" class="level1">
+<h1>Sensitivity to ensemble size</h1>
+<div id="70477b89" class="cell" data-execution_count="21">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">72</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>nenslist <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">160</span>]</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nens <span class="kw">in</span> nenslist:</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    xe <span class="op">=</span> create_ens(nens)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> etype <span class="kw">in</span> enasa_dict.keys():</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        dJedx0, err <span class="op">=</span> enasa_dict[etype](Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        dJedx0_dict[etype] <span class="op">=</span> dJedx0</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>        err_dict[etype] <span class="op">=</span> err</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        dxeopt <span class="op">=</span> calc_dxopt(dJedx0_dict[etype], vt)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>        dxeopt_dict[etype]<span class="op">=</span>dxeopt</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJdx0_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>        ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxopt_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>        ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>        Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>        ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>    ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ax.set_title(key)</span></span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(40,)
+(40,)
+(40,)
+(40,)
+(40,)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 9
+  warnings.warn(f"Y residual is constant at iteration {k}")
+/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 19
+  warnings.warn(f"Y residual is constant at iteration {k}")
+/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
+  warnings.warn(f"Y residual is constant at iteration {k}")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-3.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-4.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-5.png" width="453" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-6.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-7.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-8.png" width="453" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-9.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-10.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-11.png" width="445" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-12.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-13.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-14.png" width="457" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-15.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-16.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-17.png" width="454" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sensitivity-to-hyper-parameters" class="level1">
+<h1>Sensitivity to hyper parameters</h1>
+<section id="ridge-regression" class="level2">
+<h2 class="anchored" data-anchor-id="ridge-regression">ridge regression</h2>
+<div id="39d2b320" class="cell" data-execution_count="22">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nens <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">72</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>mulist <span class="op">=</span> [<span class="fl">0.001</span>,<span class="fl">0.01</span>,<span class="fl">0.1</span>,<span class="fl">1.0</span>]</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>xe <span class="op">=</span> create_ens(nens)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> mu <span class="kw">in</span> mulist:</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    dJedx0, err <span class="op">=</span> enasa_ridge(Jes, Jem, sJe, X0s, X0m, sX0, mu<span class="op">=</span>mu)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict[mu] <span class="op">=</span> dJedx0</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    err_dict[mu] <span class="op">=</span> err</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    dxeopt <span class="op">=</span> calc_dxopt(dJedx0,vt)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict[mu] <span class="op">=</span> dxeopt</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>ax.plot(dJdx0_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>ax.plot(dxopt_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a>    Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>    ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a>ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_title(key)</span></span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-1.png" width="586" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-2.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-3.png" width="453" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ancell_comparing_2007" class="csl-entry" role="listitem">
+Ancell, B., and G. J. Hakim, 2007: <a href="https://doi.org/10.1175/2007MWR1904.1">Comparing <span>Adjoint</span>- and <span>Ensemble</span>-<span>Sensitivity</span> <span>Analysis</span> with <span>Applications</span> to <span>Observation</span> <span>Targeting</span></a>. <em>Mon.&nbsp;Wea.&nbsp;Rev.</em>, <strong>135</strong>, 4117–4134.
+</div>
+<div id="ref-enomoto_simple_2015" class="csl-entry" role="listitem">
+Enomoto, T., S. Yamane, and W. Ohfuchi, 2015: <a href="https://doi.org/10.2151/jmsj.2015-011">Simple <span>Sensitivity</span> <span>Analysis</span> <span>Using</span> <span>Ensemble</span> <span>Forecasts</span></a>. <em>J.&nbsp;Meteorol.&nbsp;Soc.&nbsp;Japan</em>, <strong>93</strong>, 199–213.
+</div>
+<div id="ref-hacker_multivariate_2015" class="csl-entry" role="listitem">
+Hacker, J. P., and L. Lei, 2015: <a href="https://doi.org/10.1175/MWR-D-14-00309.1">Multivariate <span>Ensemble</span> <span>Sensitivity</span> with <span>Localization</span></a>. <em>Mon.&nbsp;Wea.&nbsp;Rev.</em>, <strong>143</strong>, 2013–2027.
+</div>
+<div id="ref-langland_initial_2002" class="csl-entry" role="listitem">
+Langland, R. H., M. A. Shapiro, and R. Gelaro, 2002: <a href="https://journals.ametsoc.org/view/journals/mwre/130/4/1520-0493_2002_130_0957_icsaeg_2.0.co_2.xml">Initial <span>Condition</span> <span>Sensitivity</span> and <span>Error</span> <span>Growth</span> in <span>Forecasts</span> of the 25 <span>January</span> 2000 <span>East</span> <span>Coast</span> <span>Snowstorm</span></a>. <em>Mon.&nbsp;Wea.&nbsp;Rev.</em>, <strong>130</strong>, 957–974.
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
