@@ -245,7 +245,7 @@ window.Quarto = {
 </header>
 
 
-<div id="7eb39c31" class="cell" data-execution_count="1">
+<div id="bfd6a326" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -261,7 +261,7 @@ window.Quarto = {
 <p><span id="eq-l96"><span class="math display">\[
 \frac{\mathrm{d}X_n}{\mathrm{d}t} = -X_{n-2}X_{n-1}+X_{n-1}X_{n+1}-X_n+F
 \tag{1}\]</span></span></p>
-<div id="004dcc78" class="cell" data-execution_count="2">
+<div id="814bf81d" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.environ[<span class="st">'HOME'</span>]<span class="op">+</span><span class="st">'/Development/pydpac/model'</span>)</span>
@@ -279,7 +279,7 @@ window.Quarto = {
 </div>
 <section id="basic-state" class="level3">
 <h3 class="anchored" data-anchor-id="basic-state">basic state</h3>
-<div id="a4ab6303" class="cell" data-execution_count="3">
+<div id="1eb25052" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize random seed</span></span>
@@ -348,7 +348,7 @@ x_T(i_t) &amp; i=i_t\\
 \tag{3}\]</span></span> <span id="eq-optscale"><span class="math display">\[
 \lambda = \frac{J}{(\partial J/\partial \mathbf{x}_0)^\mathrm{T}\partial J/\partial \mathbf{x}_0}
 \tag{4}\]</span></span></p>
-<div id="3474356b" class="cell" data-execution_count="4">
+<div id="ead492b1" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_dxopt(dJdx0,vt):</span>
@@ -358,42 +358,43 @@ x_T(i_t) &amp; i=i_t\\
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dxopt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="dc41ab73" class="cell" data-execution_count="5">
+<div id="1bc3afa0" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_djdx(dJdx0,vt,label<span class="op">=</span><span class="st">'dJdx0'</span>):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    plt.plot(xb[<span class="dv">0</span>],ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'x0'</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(dJdx0,label<span class="op">=</span>label)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    plt.plot(dxopt,label<span class="op">=</span><span class="st">'dxopt'</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    plt.grid()</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    plt.legend()</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f'vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> xb[<span class="dv">0</span>] <span class="op">+</span> dxopt</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    dxp <span class="op">=</span> dxopt.copy()</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(vt):</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># nonlinear evolution</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        xp <span class="op">=</span> model(xp)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># TLM evolution</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        dxp <span class="op">=</span> model.step_t(xb[i],dxp)</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(xb[vt],ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'base'</span>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(xp,ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'full model'</span>)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].plot(xp<span class="op">-</span>xb[vt],label<span class="op">=</span><span class="st">'full - base'</span>)</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].plot(dxp,label<span class="op">=</span><span class="st">'TLM'</span>)</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> axs[<span class="dv">1</span>].get_ylim()</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    ylim <span class="op">=</span> <span class="bu">max</span>(<span class="op">-</span>ymin,ymax)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].set_ylim(<span class="op">-</span>ylim,ylim)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        ax.vlines([it],<span class="dv">0</span>,<span class="dv">1</span>,colors<span class="op">=</span><span class="st">'gray'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>,transform<span class="op">=</span>ax.get_xaxis_transform(),zorder<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        ax.grid()</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        ax.legend()</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    dxtmp <span class="op">=</span> calc_dxopt(dJdx0,vt)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(xb[<span class="dv">0</span>],ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'x0'</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    plt.plot(dJdx0,label<span class="op">=</span>label)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    plt.plot(dxtmp,label<span class="op">=</span><span class="st">'dxopt'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    plt.grid()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    plt.legend()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f'vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> xb[<span class="dv">0</span>] <span class="op">+</span> dxopt</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    dxp <span class="op">=</span> dxopt.copy()</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(vt):</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># nonlinear evolution</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        xp <span class="op">=</span> model(xp)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># TLM evolution</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        dxp <span class="op">=</span> model.step_t(xb[i],dxp)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(xb[vt],ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'base'</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(xp,ls<span class="op">=</span><span class="st">'dashed'</span>,label<span class="op">=</span><span class="st">'full model'</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].plot(xp<span class="op">-</span>xb[vt],label<span class="op">=</span><span class="st">'full - base'</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].plot(dxp,label<span class="op">=</span><span class="st">'TLM'</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> axs[<span class="dv">1</span>].get_ylim()</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    ylim <span class="op">=</span> <span class="bu">max</span>(<span class="op">-</span>ymin,ymax)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].set_ylim(<span class="op">-</span>ylim,ylim)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        ax.vlines([it],<span class="dv">0</span>,<span class="dv">1</span>,colors<span class="op">=</span><span class="st">'gray'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>,transform<span class="op">=</span>ax.get_xaxis_transform(),zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        ax.grid()</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        ax.legend()</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="d125ad3c" class="cell" data-execution_count="6">
+<div id="d1392864" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> asa(vt,plot_hov<span class="op">=</span><span class="va">False</span>):</span>
@@ -415,7 +416,7 @@ x_T(i_t) &amp; i=i_t\\
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJdx0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="fb9b5d64" class="cell" data-execution_count="7">
+<div id="450d1ef2" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dJdx0 <span class="op">=</span> asa(vt, plot_hov<span class="op">=</span><span class="va">True</span>)</span>
@@ -447,7 +448,7 @@ x_T(i_t) &amp; i=i_t\\
 </section>
 <section id="ensemble-adjoint-sensitivity-analysis" class="level1">
 <h1>Ensemble adjoint sensitivity analysis</h1>
-<div id="0855ec5b" class="cell" data-execution_count="8">
+<div id="d5079820" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Ensemble trajectories</span></span>
@@ -499,7 +500,7 @@ x_T(i_t) &amp; i=i_t\\
 <span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Je, Jes, Jem, sJe, X0, X0s, X0m, sX0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="df9b11cc" class="cell" data-execution_count="9">
+<div id="43f365c3" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nens <span class="op">=</span> <span class="dv">40</span></span>
@@ -537,7 +538,7 @@ x_T(i_t) &amp; i=i_t\\
 \]</span> <span class="math display">\[
 \boldsymbol{\varepsilon}=-\overline{\mathbf{X}_0}^\mathrm{T}\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}+\overline{\mathbf{J_e}}
 \]</span></p>
-<div id="f4643a73" class="cell" data-execution_count="10">
+<div id="9b3fae0c" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dJedx0_dict <span class="op">=</span> {}</span>
@@ -551,7 +552,7 @@ x_T(i_t) &amp; i=i_t\\
 <p><span id="eq-enasa-minnorm"><span class="math display">\[
 \left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{minnorm}=\mathbf{X}_0(\mathbf{X}_0^\mathrm{T}\mathbf{X}_0)^\dagger\mathbf{J}_\mathrm{e}
 \tag{6}\]</span></span></p>
-<div id="4b9533e3" class="cell" data-execution_count="11">
+<div id="4af7b6a2" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_minnorm(Jes,Jem,sJe,X0s,X0m,sX0):</span>
@@ -587,37 +588,47 @@ x_T(i_t) &amp; i=i_t\\
 <p><span id="eq-enasa-minvar"><span class="math display">\[
 \left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{minvar}=(\mathbf{X}_0\mathbf{X}_0^\mathrm{T})^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e},
 \tag{7}\]</span></span> which cannot be determined if <span class="math inline">\(\mathbf{X}_0\mathbf{X}_0^\mathrm{T}\)</span> is singular (which is true for most cases).</p>
+<div id="63605db1" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_minvar(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.linalg.inv(np.dot(X0s,X0s.T)),X0s),Jes)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 <ul>
 <li>diagonal approximation <span class="citation" data-cites="ancell_comparing_2007">(<a href="#ref-ancell_comparing_2007" role="doc-biblioref">Ancell and Hakim 2007</a>)</span> <span id="eq-enasa-diag"><span class="math display">\[
 \left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{diag}=(\mathrm{diag}[\mathbf{X}_0\mathbf{X}_0^\mathrm{T}])^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e}
 \tag{8}\]</span></span></li>
 </ul>
-<div id="98c6f666" class="cell" data-execution_count="12">
+<div id="227cce47" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_diag(Jes,Jem,sJe,X0s,X0m,sX0):</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.eye(X0s.shape[<span class="dv">0</span>])<span class="op">/</span>np.diag(np.dot(X0s,X0s.T)),X0s),Jes)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_diag(Jes,Jem,sJe,X0s,X0m,sX0)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'diag'</span>] <span class="op">=</span> dJedx0</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'diag'</span>] <span class="op">=</span> err</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'diag'</span>],vt)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'diag'</span>] <span class="op">=</span> dxeopt</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'diag'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_diag(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.eye(X0s.shape[<span class="dv">0</span>])<span class="op">/</span>np.diag(np.dot(X0s,X0s.T)),X0s),Jes)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_diag(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'diag'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'diag'</span>] <span class="op">=</span> err</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'diag'</span>],vt)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'diag'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'diag'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-13-output-1.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-14-output-1.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-13-output-2.png" width="572" height="411" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-14-output-2.png" width="572" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -629,7 +640,7 @@ x_T(i_t) &amp; i=i_t\\
 </ul>
 <!---
 
-::: {#eff642cf .cell execution_count=13}
+::: {#41b04811 .cell execution_count=14}
 ``` {.python .cell-code}
 dJedx0_s = np.dot(np.dot(np.linalg.pinv(np.dot(X0s,X0s.T)),X0s),Jes)
 dJedx0 = dJedx0_s * sJe / sX0
@@ -651,69 +662,31 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 \left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{pcr}=\mathbf{P}_R(\mathbf{T}_R\mathbf{T}_R^\mathrm{T})^{-1}\mathbf{T}_R\mathbf{J}_e
 \tag{10}\]</span></span></li>
 </ul>
-<div id="36ba1dea" class="cell" data-execution_count="14">
+<div id="444d882b" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_pcr(Jes,Jem,sJe,X0s,X0m,sX0):</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    pcr <span class="op">=</span> make_pipeline(PCA(n_components<span class="op">=</span><span class="va">None</span>), LinearRegression())</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    pcr.fit(X0s.transpose(),Jes)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> pcr.named_steps[<span class="st">"linearregression"</span>]</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    pca <span class="op">=</span> pcr.named_steps[<span class="st">"pca"</span>]</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> pca.inverse_transform(reg.coef_[<span class="va">None</span>,:])[<span class="dv">0</span>,]</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(dJedx0_s.shape)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#err_s = pca.inverse_transform(reg.intercept_[None,:])[0,]</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0) <span class="co">#+ err_s</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_pcr(Jes,Jem,sJe,X0s,X0m,sX0)</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'pcr'</span>] <span class="op">=</span> dJedx0</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'pcr'</span>] <span class="op">=</span> err</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'pcr'</span>],vt)</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'pcr'</span>] <span class="op">=</span> dxeopt</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'pcr'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>(40,)</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-15-output-2.png" width="582" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-15-output-3.png" width="572" height="411" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<ul>
-<li>ridge regression <span id="eq-enasa-ridge"><span class="math display">\[
-\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{ridge}=(\mathbf{X}_0\mathbf{X}_0^\mathrm{T}+\mu\mathbf{I})^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e},
-\tag{11}\]</span></span> where <span class="math inline">\(\mu\)</span> is a hyper parameter.</li>
-</ul>
-<div id="892f5247" class="cell" data-execution_count="15">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_ridge(Jes,Jem,sJe,X0s,X0m,sX0,mu<span class="op">=</span><span class="fl">0.01</span>):</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.linalg.inv(np.dot(X0s,X0s.T)<span class="op">+</span>mu<span class="op">*</span>np.eye(X0s.shape[<span class="dv">0</span>])),X0s),Jes)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err <span class="op">=</span> enasa_ridge(Jes,Jem,sJe,X0s,X0m,sX0)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'ridge'</span>] <span class="op">=</span> dJedx0</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'ridge'</span>] <span class="op">=</span> err</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'ridge'</span>],vt)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'ridge'</span>] <span class="op">=</span> dxeopt</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'ridge'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_pcr(Jes,Jem,sJe,X0s,X0m,sX0):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    pcr <span class="op">=</span> make_pipeline(PCA(n_components<span class="op">=</span><span class="va">None</span>), LinearRegression())</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    pcr.fit(X0s.transpose(),Jes)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> pcr.named_steps[<span class="st">"linearregression"</span>]</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    pca <span class="op">=</span> pcr.named_steps[<span class="st">"pca"</span>]</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> pca.inverse_transform(reg.coef_[<span class="va">None</span>,:])[<span class="dv">0</span>,]</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(dJedx0_s.shape)</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#err_s = pca.inverse_transform(reg.intercept_[None,:])[0,]</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0) <span class="co">#+ err_s</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>dJedx0, err<span class="op">=</span>enasa_pcr(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'pcr'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'pcr'</span>] <span class="op">=</span> err</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'pcr'</span>],vt)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'pcr'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'pcr'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -731,6 +704,41 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 </div>
 </div>
 <ul>
+<li>ridge regression <span id="eq-enasa-ridge"><span class="math display">\[
+\left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{ridge}=(\mathbf{X}_0\mathbf{X}_0^\mathrm{T}+\mu\mathbf{I})^{-1}\mathbf{X}_0\mathbf{J}_\mathrm{e},
+\tag{11}\]</span></span> where <span class="math inline">\(\mu\)</span> is a hyper parameter.</li>
+</ul>
+<div id="4b659735" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_ridge(Jes,Jem,sJe,X0s,X0m,sX0,mu<span class="op">=</span><span class="fl">0.01</span>):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    dJedx0_s <span class="op">=</span> np.dot(np.dot(np.linalg.inv(np.dot(X0s,X0s.T)<span class="op">+</span>mu<span class="op">*</span>np.eye(X0s.shape[<span class="dv">0</span>])),X0s),Jes)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    dJedx0 <span class="op">=</span> dJedx0_s <span class="op">*</span> sJe <span class="op">/</span> sX0</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> Jem <span class="op">-</span> np.dot(X0m,dJedx0)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dJedx0, err</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>dJedx0, err <span class="op">=</span> enasa_ridge(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>dJedx0_dict[<span class="st">'ridge'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>err_dict[<span class="st">'ridge'</span>] <span class="op">=</span> err</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>dxeopt<span class="op">=</span>calc_dxopt(dJedx0_dict[<span class="st">'ridge'</span>],vt)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>dxopt_dict[<span class="st">'ridge'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>check_djdx(dJedx0_dict[<span class="st">'ridge'</span>],vt,label<span class="op">=</span><span class="st">'dJedx0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-17-output-1.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-17-output-2.png" width="572" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
 <li><p>partial least square (PLS) regression</p>
 <p>The target vector is also projected onto a latent space spanned by the principal components. <span id="eq-enasa-pls"><span class="math display">\[
 \left(\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0}\right)_\mathrm{pls}=\mathbf{W}(\mathbf{P}^\mathrm{T}\mathbf{W})^{-1}\mathbf{d}
@@ -742,7 +750,7 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 \]</span></p>
 <p><span class="math inline">\(\mathbf{X}_0^{(r)}, \mathbf{J}_\mathrm{e}^{(r)}\)</span> are obtained from deflation.</p></li>
 </ul>
-<div id="bcdd3870" class="cell" data-execution_count="16">
+<div id="3795b803" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> enasa_pls(Jes,Jem,sJe,X0s,X0m,sX0):</span>
@@ -768,14 +776,14 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-17-output-2.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-18-output-2.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-17-output-3.png" width="572" height="411" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-18-output-3.png" width="572" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -783,10 +791,10 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 </section>
 <section id="comparison-of-enasa-methods" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-of-enasa-methods">Comparison of EnASA methods</h2>
-<div id="16e16089" class="cell" data-execution_count="17">
+<div id="d803b36e" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>markers<span class="op">=</span>[<span class="st">'o'</span>,<span class="st">'v'</span>,<span class="st">'s'</span>,<span class="st">'P'</span>,<span class="st">'X'</span>]</span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>markers<span class="op">=</span>[<span class="st">'o'</span>,<span class="st">'v'</span>,<span class="st">'s'</span>,<span class="st">'P'</span>,<span class="st">'X'</span>,<span class="st">'p'</span>]</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>marker_style<span class="op">=</span><span class="bu">dict</span>(markerfacecolor<span class="op">=</span><span class="st">'none'</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>ax.plot(dJdx0,label<span class="op">=</span><span class="st">'ASA'</span>)</span>
@@ -800,12 +808,12 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-18-output-1.png" width="569" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-19-output-1.png" width="569" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="ee5dbaa0" class="cell" data-execution_count="18">
+<div id="f35e97a4" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
@@ -820,7 +828,7 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-19-output-1.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-20-output-1.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -828,30 +836,35 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <p><span class="math display">\[
 \hat{\mathbf{J}_\mathrm{e}}=\mathbf{X}_0^\mathrm{T}\frac{\partial J_\mathrm{e}}{\partial \mathbf{x}_0} + \boldsymbol{\varepsilon}
 \]</span></p>
-<div id="85ca4636" class="cell" data-execution_count="19">
+<div id="e44af04c" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">2</span>,constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>cmap<span class="op">=</span>plt.get_cmap(<span class="st">'tab10'</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'observed'</span>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'estimated'</span>)</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Je'</span>)</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_title(key)</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="fl">1.0</span>)</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">#fig, ax = plt.subplots()</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> key<span class="op">==</span><span class="st">'diag'</span>:</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        axs[<span class="dv">0</span>].plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        axs[<span class="dv">1</span>].plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="st">'Je'</span>)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ax.set_title(key)</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-20-output-1.png" width="444" height="449" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-21-output-1.png" width="683" height="358" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -860,7 +873,7 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 </section>
 <section id="sensitivity-to-lead-time" class="level1">
 <h1>Sensitivity to lead time</h1>
-<div id="8efddcaa" class="cell" data-execution_count="20">
+<div id="a1231a07" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>enasa_dict <span class="op">=</span> {</span>
@@ -907,40 +920,39 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
 <span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
 <span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">2</span>,constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
 <span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>        Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
-<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>        ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
-<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
-<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
-<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>    ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'observed'</span>)</span>
-<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'estimated'</span>)</span>
-<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
-<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
-<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ax.set_title(key)</span></span>
-<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
-<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="fl">1.0</span>)</span>
-<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> key<span class="op">==</span><span class="st">'diag'</span>:</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>            axs[<span class="dv">0</span>].plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>            axs[<span class="dv">1</span>].plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>        ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>        line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>        ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>        ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>        ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>        ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h'</span>)</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>        ax.legend()</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>        <span class="co">#ax.set_title(key)</span></span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>        ax.grid()</span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a>        ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-1.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-1.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-2.png" width="572" height="411" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-2.png" width="572" height="411" class="figure-img"></p>
 </figure>
 </div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(40,)
-(40,)
-(40,)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
@@ -951,210 +963,42 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-5.png" width="569" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-4.png" width="569" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-6.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-5.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-7.png" width="444" height="449" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-6.png" width="683" height="358" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-8.png" width="577" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-7.png" width="577" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-9.png" width="585" height="411" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-8.png" width="585" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-10.png" width="586" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-11.png" width="582" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-12.png" width="450" height="449" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-13.png" width="577" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-14.png" width="572" height="411" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-15.png" width="586" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-16.png" width="582" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-21-output-17.png" width="453" height="449" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="sensitivity-to-ensemble-size" class="level1">
-<h1>Sensitivity to ensemble size</h1>
-<div id="70477b89" class="cell" data-execution_count="21">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">72</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>nenslist <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">160</span>]</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nens <span class="kw">in</span> nenslist:</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    xe <span class="op">=</span> create_ens(nens)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> etype <span class="kw">in</span> enasa_dict.keys():</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        dJedx0, err <span class="op">=</span> enasa_dict[etype](Jes,Jem,sJe,X0s,X0m,sX0)</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        dJedx0_dict[etype] <span class="op">=</span> dJedx0</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>        err_dict[etype] <span class="op">=</span> err</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        dxeopt <span class="op">=</span> calc_dxopt(dJedx0_dict[etype], vt)</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>        dxeopt_dict[etype]<span class="op">=</span>dxeopt</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJdx0_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>        ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxopt_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>        ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
-<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
-<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
-<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>        Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
-<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>        ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
-<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
-<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
-<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>    ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'observed'</span>)</span>
-<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'estimated'</span>)</span>
-<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
-<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ax.set_title(key)</span></span>
-<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
-<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>    ax.set_aspect(<span class="fl">1.0</span>)</span>
-<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>(40,)
-(40,)
-(40,)
-(40,)
-(40,)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 9
-  warnings.warn(f"Y residual is constant at iteration {k}")
-/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 19
-  warnings.warn(f"Y residual is constant at iteration {k}")
-/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
-  warnings.warn(f"Y residual is constant at iteration {k}")</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-3.png" width="577" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-4.png" width="582" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-5.png" width="453" height="449" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-6.png" width="577" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-7.png" width="582" height="431" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-8.png" width="453" height="449" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-9.png" width="577" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-9.png" width="586" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1168,7 +1012,7 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-11.png" width="445" height="449" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-11.png" width="683" height="350" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1182,35 +1026,206 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-13.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-13.png" width="572" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-14.png" width="457" height="449" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-14.png" width="586" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-15.png" width="577" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-15.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-16.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-22-output-16.png" width="683" height="354" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sensitivity-to-ensemble-size" class="level1">
+<h1>Sensitivity to ensemble size</h1>
+<div id="1554c056" class="cell" data-execution_count="22">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">24</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>nenslist <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">80</span>, <span class="dv">160</span>]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nens <span class="kw">in</span> nenslist:</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    xe <span class="op">=</span> create_ens(nens)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> etype <span class="kw">in</span> enasa_dict.keys():</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        dJedx0, err <span class="op">=</span> enasa_dict[etype](Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        dJedx0_dict[etype] <span class="op">=</span> dJedx0</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        err_dict[etype] <span class="op">=</span> err</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        dxeopt <span class="op">=</span> calc_dxopt(dJedx0_dict[etype], vt)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>        dxeopt_dict[etype]<span class="op">=</span>dxeopt</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> nens <span class="op">&gt;</span> nx:</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>        dJedx0, err <span class="op">=</span> enasa_minvar(Jes,Jem,sJe,X0s,X0m,sX0)</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>        dJedx0_dict[<span class="st">'minvar'</span>] <span class="op">=</span> dJedx0</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        err_dict[<span class="st">'minvar'</span>] <span class="op">=</span> err</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        dxeopt <span class="op">=</span> calc_dxopt(dJedx0_dict[etype],vt)</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        dxeopt_dict[<span class="st">'minvar'</span>] <span class="op">=</span> dxeopt</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJdx0_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>        ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxopt_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>        ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="ss">f'EnASA,</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    ax.grid()</span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(ncols<span class="op">=</span><span class="dv">2</span>,constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>        Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> key<span class="op">==</span><span class="st">'diag'</span>:</span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>            axs[<span class="dv">0</span>].plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>            axs[<span class="dv">1</span>].plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span>key,<span class="op">**</span>marker_style)</span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax <span class="kw">in</span> axs:</span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>        ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>        line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>        ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>        ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>        ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>        ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>        ax.legend()</span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>        <span class="co">#ax.set_title(key)</span></span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>        ax.grid()</span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>        ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 9
+  warnings.warn(f"Y residual is constant at iteration {k}")
+/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 19
+  warnings.warn(f"Y residual is constant at iteration {k}")
+/Users/nakashita/Library/Python/3.11/lib/python/site-packages/sklearn/cross_decomposition/_pls.py:305: UserWarning: Y residual is constant at iteration 39
+  warnings.warn(f"Y residual is constant at iteration {k}")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-2.png" width="577" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-22-output-17.png" width="454" height="449" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-3.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-4.png" width="683" height="358" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-5.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-6.png" width="590" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-7.png" width="683" height="358" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-8.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-9.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-10.png" width="683" height="356" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-11.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-12.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-13.png" width="683" height="358" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-14.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-15.png" width="582" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EnASA_L96_files/figure-html/cell-23-output-16.png" width="683" height="358" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1220,75 +1235,75 @@ err = Jem - sJe * np.dot(X0m/X0s,dJedx0_s)
 <h1>Sensitivity to hyper parameters</h1>
 <section id="ridge-regression" class="level2">
 <h2 class="anchored" data-anchor-id="ridge-regression">ridge regression</h2>
-<div id="39d2b320" class="cell" data-execution_count="22">
+<div id="54c7ad80" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nens <span class="op">=</span> <span class="dv">40</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">72</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>mulist <span class="op">=</span> [<span class="fl">0.001</span>,<span class="fl">0.01</span>,<span class="fl">0.1</span>,<span class="fl">1.0</span>]</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>xe <span class="op">=</span> create_ens(nens)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> mu <span class="kw">in</span> mulist:</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    dJedx0, err <span class="op">=</span> enasa_ridge(Jes, Jem, sJe, X0s, X0m, sX0, mu<span class="op">=</span>mu)</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict[mu] <span class="op">=</span> dJedx0</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    err_dict[mu] <span class="op">=</span> err</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    dxeopt <span class="op">=</span> calc_dxopt(dJedx0,vt)</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict[mu] <span class="op">=</span> dxeopt</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>ax.plot(dJdx0_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>ax.plot(dxopt_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
-<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
-<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
-<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a>    Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
-<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>    ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
-<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a>ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
-<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
-<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'observed'</span>)</span>
-<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'estimated'</span>)</span>
-<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_title(key)</span></span>
-<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
-<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="fl">1.0</span>)</span>
-<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nens <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>vt <span class="op">=</span> <span class="dv">72</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>mulist <span class="op">=</span> [<span class="fl">0.001</span>,<span class="fl">0.01</span>,<span class="fl">0.1</span>,<span class="fl">1.0</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>dJedx0_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>err_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>dxeopt_dict<span class="op">=</span><span class="bu">dict</span>()</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>xe <span class="op">=</span> create_ens(nens)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>Je, Jes, Jem, sJe, X0, X0s, X0m, sX0 <span class="op">=</span> generate_prtb(vt,xb,xe)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> mu <span class="kw">in</span> mulist:</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    dJedx0, err <span class="op">=</span> enasa_ridge(Jes, Jem, sJe, X0s, X0m, sX0, mu<span class="op">=</span>mu)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    dJedx0_dict[mu] <span class="op">=</span> dJedx0</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    err_dict[mu] <span class="op">=</span> err</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    dxeopt <span class="op">=</span> calc_dxopt(dJedx0,vt)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    dxeopt_dict[mu] <span class="op">=</span> dxeopt</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>ax.plot(dJdx0_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    ax.plot(dJedx0_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'dJ/dx0, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>ax.plot(dxopt_dict[vt],label<span class="op">=</span><span class="st">'ASA'</span>)</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dxeopt_dict.keys()):</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>    ax.plot(dxeopt_dict[key],ls<span class="op">=</span><span class="st">'dashed'</span>,marker<span class="op">=</span>markers[i],label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'dxopt, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,key <span class="kw">in</span> <span class="bu">enumerate</span>(dJedx0_dict.keys()):</span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>    Je_est <span class="op">=</span> np.dot(X0.T,dJedx0_dict[key]) <span class="op">+</span> err_dict[key]</span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    ax.plot(Je,Je_est,lw<span class="op">=</span><span class="fl">0.0</span>,marker<span class="op">=</span>markers[i],c<span class="op">=</span>cmap(i<span class="op">+</span><span class="dv">1</span>),label<span class="op">=</span><span class="vs">r'$\mu$='</span><span class="op">+</span><span class="ss">f'</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">'</span>,<span class="op">**</span>marker_style)</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>ymin, ymax <span class="op">=</span> ax.get_ylim()</span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>line <span class="op">=</span> np.linspace(ymin,ymax,<span class="dv">100</span>)</span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>ax.plot(line,line,color<span class="op">=</span><span class="st">'k'</span>,zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'observed'</span>)</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'estimated'</span>)</span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'Je, vt=</span><span class="sc">{</span>vt<span class="sc">}</span><span class="ss">h, Nens=</span><span class="sc">{</span>nens<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_title(key)</span></span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a>ax.grid()</span>
+<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="fl">1.0</span>)</span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-23-output-1.png" width="586" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-24-output-1.png" width="586" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-23-output-2.png" width="582" height="431" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-24-output-2.png" width="582" height="431" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EnASA_L96_files/figure-html/cell-23-output-3.png" width="453" height="449" class="figure-img"></p>
+<p><img src="EnASA_L96_files/figure-html/cell-24-output-3.png" width="453" height="449" class="figure-img"></p>
 </figure>
 </div>
 </div>
