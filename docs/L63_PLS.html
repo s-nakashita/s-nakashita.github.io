@@ -184,13 +184,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="b996a2e7" class="cell" data-execution_count="1">
+<div id="40d97c4d" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="ec894db4" class="cell" data-execution_count="2">
+<div id="a0ce9282" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> L63():</span>
@@ -227,7 +227,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> wt <span class="op">+</span> dw <span class="op">*</span> <span class="va">self</span>.dt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="6e156ee5" class="cell" data-execution_count="3">
+<div id="38053241" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="tlm-and-adj-check" class="level2">
 <h2 class="anchored" data-anchor-id="tlm-and-adj-check">TLM and ADJ check</h2>
-<div id="6c2bb716" class="cell" data-execution_count="4">
+<div id="3f77656e" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> L63()</span>
@@ -277,14 +277,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"(Mx)^T(Mx)-x^TM^TMx=</span><span class="sc">{</span>np<span class="sc">.</span>dot(dw,dw)<span class="op">-</span>np<span class="sc">.</span>dot(dw0,MtMw)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>|M(x+a*dx)-M(x)|/|a*TLM*dx|=1.0000000015309585
+<pre><code>|M(x+a*dx)-M(x)|/|a*TLM*dx|=1.0000000008559033
 (Mx)^T(Mx)-x^TM^TMx=0.0</code></pre>
 </div>
 </div>
 </section>
 <section id="singular-vector" class="level2">
 <h2 class="anchored" data-anchor-id="singular-vector">Singular vector</h2>
-<div id="08bca952" class="cell" data-execution_count="5">
+<div id="32d66552" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">## base field</span></span>
@@ -296,7 +296,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="lanczos-method" class="level3">
 <h3 class="anchored" data-anchor-id="lanczos-method">Lanczos method</h3>
-<div id="13a9c844" class="cell" data-execution_count="6">
+<div id="38f72525" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize</span></span>
@@ -320,67 +320,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dw<span class="op">/</span>alpha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>iter:1, diff=1.707e-06
-iter:2, diff=2.408e-06
-iter:3, diff=2.730e-06
-iter:4, diff=2.365e-06
-iter:5, diff=1.666e-06
-iter:6, diff=1.066e-06
-iter:7, diff=6.739e-07
-iter:8, diff=4.423e-07
-iter:9, diff=3.085e-07
-iter:10, diff=2.287e-07
-iter:11, diff=1.774e-07
-iter:12, diff=1.414e-07
-iter:13, diff=1.144e-07
-iter:14, diff=9.323e-08
-iter:15, diff=7.623e-08
-iter:16, diff=6.243e-08
-iter:17, diff=5.116e-08
-iter:18, diff=4.193e-08
-iter:19, diff=3.438e-08
-iter:20, diff=2.818e-08
-iter:21, diff=2.311e-08
-iter:22, diff=1.894e-08
-iter:23, diff=1.553e-08
-iter:24, diff=1.273e-08
-iter:25, diff=1.044e-08
-iter:26, diff=8.559e-09
-iter:27, diff=7.017e-09
-iter:28, diff=5.753e-09
-iter:29, diff=4.716e-09
-iter:30, diff=3.867e-09
-iter:31, diff=3.170e-09
-iter:32, diff=2.599e-09
-iter:33, diff=2.131e-09
-iter:34, diff=1.747e-09
-iter:35, diff=1.432e-09
-iter:36, diff=1.174e-09
-iter:37, diff=9.625e-10
-iter:38, diff=7.891e-10
-iter:39, diff=6.469e-10
-iter:40, diff=5.304e-10
-iter:41, diff=4.348e-10
-iter:42, diff=3.565e-10
-iter:43, diff=2.923e-10
-iter:44, diff=2.396e-10
-iter:45, diff=1.964e-10
-iter:46, diff=1.610e-10
-iter:47, diff=1.320e-10
-iter:48, diff=1.082e-10
-iter:49, diff=8.874e-11
-iter:50, diff=7.275e-11
-iter:51, diff=5.964e-11
-iter:52, diff=4.890e-11
-iter:53, diff=4.009e-11
-iter:54, diff=3.287e-11
-iter:55, diff=2.694e-11
-iter:56, diff=2.209e-11
-iter:57, diff=1.811e-11
-iter:58, diff=1.485e-11
-iter:59, diff=1.217e-11
-iter:60, diff=9.979e-12
-[ 0.59253215  0.76624248 -0.24855203]</code></pre>
+<pre><code>iter:1, diff=2.450e-06
+iter:2, diff=2.557e-06
+iter:3, diff=2.135e-06
+iter:4, diff=1.540e-06
+iter:5, diff=1.058e-06
+iter:6, diff=7.428e-07
+iter:7, diff=5.475e-07
+iter:8, diff=4.226e-07
+iter:9, diff=3.365e-07
+iter:10, diff=2.725e-07
+iter:11, diff=2.225e-07
+iter:12, diff=1.822e-07
+iter:13, diff=1.495e-07
+iter:14, diff=1.226e-07
+iter:15, diff=1.006e-07
+iter:16, diff=8.254e-08
+iter:17, diff=6.770e-08
+iter:18, diff=5.552e-08
+iter:19, diff=4.553e-08
+iter:20, diff=3.733e-08
+iter:21, diff=3.061e-08
+iter:22, diff=2.510e-08
+iter:23, diff=2.058e-08
+iter:24, diff=1.687e-08
+iter:25, diff=1.383e-08
+iter:26, diff=1.134e-08
+iter:27, diff=9.296e-09
+iter:28, diff=7.621e-09
+iter:29, diff=6.248e-09
+iter:30, diff=5.123e-09
+iter:31, diff=4.200e-09
+iter:32, diff=3.443e-09
+iter:33, diff=2.823e-09
+iter:34, diff=2.314e-09
+iter:35, diff=1.897e-09
+iter:36, diff=1.555e-09
+iter:37, diff=1.275e-09
+iter:38, diff=1.045e-09
+iter:39, diff=8.571e-10
+iter:40, diff=7.027e-10
+iter:41, diff=5.761e-10
+iter:42, diff=4.723e-10
+iter:43, diff=3.872e-10
+iter:44, diff=3.174e-10
+iter:45, diff=2.602e-10
+iter:46, diff=2.134e-10
+iter:47, diff=1.749e-10
+iter:48, diff=1.434e-10
+iter:49, diff=1.176e-10
+iter:50, diff=9.638e-11
+iter:51, diff=7.902e-11
+iter:52, diff=6.478e-11
+iter:53, diff=5.311e-11
+iter:54, diff=4.354e-11
+iter:55, diff=3.570e-11
+iter:56, diff=2.927e-11
+iter:57, diff=2.399e-11
+iter:58, diff=1.967e-11
+iter:59, diff=1.613e-11
+iter:60, diff=1.322e-11
+iter:61, diff=1.084e-11
+iter:62, diff=8.886e-12
+[-0.59253212 -0.76624265  0.24855156]</code></pre>
 </div>
 </div>
 
